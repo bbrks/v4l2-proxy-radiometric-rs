@@ -8,11 +8,18 @@ Extracts per-pixel radiometric data from the data frame, applies color palettes 
 
 ### Before (raw input `/dev/video0`)
 
-![]()
+<img width="290" height="398" alt="Screenshot_20260225_225558" src="https://github.com/user-attachments/assets/98ad5cbb-8c7b-4c65-b4b0-ef9d5a89a284" />
 
 ### After (processed output `/dev/video2`)
 
-![]()
+`--tui` with `ffplay /dev/video2`
+
+<img width="1386" height="544" alt="Screenshot_20260225_225504" src="https://github.com/user-attachments/assets/80ff23ca-5e71-4af5-94a5-c9e747de14d2" />
+
+`--palette=all` preview
+
+<img width="770" height="638" alt="Screenshot_20260225_225700" src="https://github.com/user-attachments/assets/111a9a37-6eb7-48f3-a704-f8efc87207cc" />
+
 
 ## Usage
 
