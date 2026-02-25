@@ -80,13 +80,7 @@ impl Loopback {
             })?;
 
         let mut fmt = V4l2Format::new(width, height);
-        let ret = unsafe {
-            libc::ioctl(
-                file.as_raw_fd(),
-                VIDIOC_S_FMT,
-                &raw mut fmt,
-            )
-        };
+        let ret = unsafe { libc::ioctl(file.as_raw_fd(), VIDIOC_S_FMT, &raw mut fmt) };
         if ret < 0 {
             return Err(std::io::Error::last_os_error())
                 .context("VIDIOC_S_FMT ioctl failed on loopback device");
@@ -96,9 +90,8 @@ impl Loopback {
         let dev_name = std::path::Path::new(path)
             .file_name()
             .and_then(|n| n.to_str())
-            .and_then(|name| {
-                fs::read_to_string(format!("/sys/class/video4linux/{name}/name")).ok()
-            }).map_or_else(|| "Unknown".into(), |s| s.trim().to_string());
+            .and_then(|name| fs::read_to_string(format!("/sys/class/video4linux/{name}/name")).ok())
+            .map_or_else(|| "Unknown".into(), |s| s.trim().to_string());
 
         eprintln!("Output: {dev_name} ({path}) {width}x{height} YUYV");
 

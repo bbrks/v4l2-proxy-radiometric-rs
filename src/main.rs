@@ -7,19 +7,19 @@ mod thermal;
 mod tui;
 
 use std::io::Write;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Instant;
 
 use anyhow::{Context, Result};
 use clap::Parser;
 use image::{Rgb, RgbImage};
+use loopback::Loopback;
+use overlay::OverlayLevel;
+use palette::{PALETTE_NAMES, Palette};
 use v4l::buffer::Type;
 use v4l::io::mmap::Stream;
 use v4l::io::traits::CaptureStream;
-use loopback::Loopback;
-use overlay::OverlayLevel;
-use palette::{Palette, PALETTE_NAMES};
 
 #[derive(Clone, Copy)]
 struct ThermalConfig {
@@ -28,14 +28,25 @@ struct ThermalConfig {
 }
 
 impl ThermalConfig {
-    const fn pixel_count(self) -> usize { self.therm_w * self.therm_h }
-    const fn expected_frame_bytes(self) -> usize { self.therm_w * self.therm_h * 2 * 2 }
-    const fn bottom_start(self) -> usize { self.therm_w * self.therm_h * 2 }
-    const fn center_index(self) -> usize { (self.therm_h / 2) * self.therm_w + (self.therm_w / 2) }
+    const fn pixel_count(self) -> usize {
+        self.therm_w * self.therm_h
+    }
+    const fn expected_frame_bytes(self) -> usize {
+        self.therm_w * self.therm_h * 2 * 2
+    }
+    const fn bottom_start(self) -> usize {
+        self.therm_w * self.therm_h * 2
+    }
+    const fn center_index(self) -> usize {
+        (self.therm_h / 2) * self.therm_w + (self.therm_w / 2)
+    }
 }
 
 #[derive(Parser)]
-#[command(name = "v4l2-thermal-proxy", about = "Thermal camera V4L2 loopback proxy")]
+#[command(
+    name = "v4l2-thermal-proxy",
+    about = "Thermal camera V4L2 loopback proxy"
+)]
 struct Args {
     /// Input V4L2 device
     #[arg(short = 'i', long = "input-device", default_value = "/dev/video0")]
@@ -111,7 +122,12 @@ fn run_warmup(stream: &mut Stream, verbose: bool, cfg: ThermalConfig) -> Result<
 }
 
 // Process one camera frame: extract temps, tonemap, render, convert, write.
-#[allow(clippy::too_many_arguments, clippy::cast_possible_truncation, clippy::cast_precision_loss, clippy::similar_names)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::cast_possible_truncation,
+    clippy::cast_precision_loss,
+    clippy::similar_names
+)]
 fn render_frame(
     buf: &[u8],
     temps: &mut [f32],
@@ -173,7 +189,16 @@ fn render_frame(
             }
         }
 
-        overlay::draw_overlay(display, temps, t_min, t_max, &palette.name, overlay_level, cfg.therm_w, cfg.therm_h);
+        overlay::draw_overlay(
+            display,
+            temps,
+            t_min,
+            t_max,
+            &palette.name,
+            overlay_level,
+            cfg.therm_w,
+            cfg.therm_h,
+        );
     }
 
     convert::rgb_to_yuyv_into(display, yuyv);
@@ -220,7 +245,10 @@ fn main() -> Result<()> {
         eprintln!("Palette: {}", palette.name);
     }
     eprintln!("Overlay: {}", args.overlay);
-    eprintln!("Scale:   {}x ({}x{} -> {}x{})", scale, cfg.therm_w, cfg.therm_h, out_w, out_h);
+    eprintln!(
+        "Scale:   {}x ({}x{} -> {}x{})",
+        scale, cfg.therm_w, cfg.therm_h, out_w, out_h
+    );
     eprintln!();
     eprintln!("Press Ctrl+C to stop.");
     eprintln!();
@@ -293,9 +321,7 @@ fn main() -> Result<()> {
             fps_time = Instant::now();
 
             if args.verbose && !tui_mode {
-                eprintln!(
-                    "  {fps_display:.1} fps | {interval_t_min:.1}~{interval_t_max:.1} C",
-                );
+                eprintln!("  {fps_display:.1} fps | {interval_t_min:.1}~{interval_t_max:.1} C",);
             }
 
             interval_t_min = f32::INFINITY;

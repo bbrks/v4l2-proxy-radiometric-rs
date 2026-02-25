@@ -45,10 +45,18 @@ fn rgb_to_yuyv(img: &RgbImage) -> Vec<u8> {
 //
 // Uses fixed-point integer arithmetic (BT.601 coefficients × 256) and raw
 // pixel buffer access to avoid per-pixel bounds checks and float operations.
-#[allow(clippy::many_single_char_names, clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+#[allow(
+    clippy::many_single_char_names,
+    clippy::cast_possible_truncation,
+    clippy::cast_sign_loss
+)]
 pub(crate) fn rgb_to_yuyv_into(img: &RgbImage, out: &mut [u8]) {
     let (w, h) = img.dimensions();
-    debug_assert_eq!(out.len(), (w * h * 2) as usize, "output buffer size mismatch");
+    debug_assert_eq!(
+        out.len(),
+        (w * h * 2) as usize,
+        "output buffer size mismatch"
+    );
     let raw = img.as_raw();
     let stride = (w * 3) as usize;
     let mut oi = 0;
@@ -64,7 +72,11 @@ pub(crate) fn rgb_to_yuyv_into(img: &RgbImage, out: &mut [u8]) {
 
             let (r1, g1, b1) = if x + 1 < w as usize {
                 let p1 = p0 + 3;
-                (i32::from(raw[p1]), i32::from(raw[p1 + 1]), i32::from(raw[p1 + 2]))
+                (
+                    i32::from(raw[p1]),
+                    i32::from(raw[p1 + 1]),
+                    i32::from(raw[p1 + 2]),
+                )
             } else {
                 (r0, g0, b0)
             };

@@ -127,25 +127,13 @@ pub(crate) fn draw_overlay(
     let min_dx = ((min_idx % therm_w) as f32 * scale_x) as i32;
     let min_dy = ((min_idx / therm_w) as f32 * scale_y) as i32;
     draw_marker_down(img, min_dx, min_dy, 6, MIN_COLOR);
-    draw_text(
-        img,
-        min_dx + 10,
-        min_dy,
-        &format!("{t_min:.1}C"),
-        MIN_COLOR,
-    );
+    draw_text(img, min_dx + 10, min_dy, &format!("{t_min:.1}C"), MIN_COLOR);
 
     // Max marker (red triangle pointing up)
     let max_dx = ((max_idx % therm_w) as f32 * scale_x) as i32;
     let max_dy = ((max_idx / therm_w) as f32 * scale_y) as i32;
     draw_marker_up(img, max_dx, max_dy, 6, MAX_COLOR);
-    draw_text(
-        img,
-        max_dx + 10,
-        max_dy,
-        &format!("{t_max:.1}C"),
-        MAX_COLOR,
-    );
+    draw_text(img, max_dx + 10, max_dy, &format!("{t_max:.1}C"), MAX_COLOR);
 
     // --- hi/lo/target: add center crosshair ---
 

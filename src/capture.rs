@@ -8,8 +8,7 @@ use v4l::{Device, FourCC};
 // native frame dimensions. No resolution is hardcoded — the caller derives
 // thermal dimensions from `height / 2`.
 pub(crate) fn open_camera(path: &str, verbose: bool) -> Result<(Device, u32, u32)> {
-    let dev =
-        Device::with_path(path).with_context(|| format!("Cannot open {path}"))?;
+    let dev = Device::with_path(path).with_context(|| format!("Cannot open {path}"))?;
 
     // Ensure YUYV pixel format but don't force a specific resolution.
     let mut fmt = dev.format()?;
@@ -21,7 +20,8 @@ pub(crate) fn open_camera(path: &str, verbose: bool) -> Result<(Device, u32, u32
     // Query device capabilities for the card name
     let caps = dev.query_caps().ok();
     let card = caps
-        .as_ref().map_or_else(|| "Unknown".into(), |c| c.card.clone());
+        .as_ref()
+        .map_or_else(|| "Unknown".into(), |c| c.card.clone());
 
     eprintln!(
         "Input:  {} ({}) {}x{} YUYV",
@@ -35,7 +35,8 @@ pub(crate) fn open_camera(path: &str, verbose: bool) -> Result<(Device, u32, u32
         if let Some(caps) = &caps {
             eprintln!("        driver:  {}", caps.driver);
             eprintln!("        bus:     {}", caps.bus);
-            eprintln!("        version: {}.{}.{}",
+            eprintln!(
+                "        version: {}.{}.{}",
                 caps.version.0, caps.version.1, caps.version.2,
             );
         }

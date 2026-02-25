@@ -48,7 +48,11 @@ fn tonemap(temps: &[f32]) -> (Vec<u8>, f32, f32) {
 // `bottom_start` is the byte offset where raw radiometric data begins
 // (i.e. `therm_w * therm_h * 2` for a dual-frame layout).
 pub(crate) fn extract_temperatures_into(frame: &[u8], temps: &mut [f32], bottom_start: usize) {
-    debug_assert!(bottom_start <= frame.len(), "bottom_start ({bottom_start}) out of bounds (frame len {})", frame.len());
+    debug_assert!(
+        bottom_start <= frame.len(),
+        "bottom_start ({bottom_start}) out of bounds (frame len {})",
+        frame.len()
+    );
     let bottom = &frame[bottom_start..];
 
     for (i, temp) in temps.iter_mut().enumerate() {
@@ -70,8 +74,12 @@ pub(crate) fn tonemap_into(temps: &[f32], indices: &mut [u8]) -> (f32, f32) {
     let mut t_min = f32::INFINITY;
     let mut t_max = f32::NEG_INFINITY;
     for &t in temps {
-        if t < t_min { t_min = t; }
-        if t > t_max { t_max = t; }
+        if t < t_min {
+            t_min = t;
+        }
+        if t > t_max {
+            t_max = t;
+        }
     }
     let t_range = (t_max - t_min).max(0.01);
 

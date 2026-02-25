@@ -86,10 +86,7 @@ pub(crate) fn draw_tui_frame(
             let [rb, gb, bb] = lut[indices[ty_bot * therm_w + tx] as usize];
 
             // fg = top pixel, bg = bottom pixel, char = ▀
-            let _ = write!(
-                out,
-                "\x1b[38;2;{rt};{gt};{bt};48;2;{rb};{gb};{bb}m\u{2580}",
-            );
+            let _ = write!(out, "\x1b[38;2;{rt};{gt};{bt};48;2;{rb};{gb};{bb}m\u{2580}",);
         }
         out.push_str("\x1b[0m\n");
     }
@@ -105,23 +102,29 @@ pub(crate) fn draw_tui_frame(
         Marker {
             ac: (min_i % therm_w) / col_step,
             ar: (min_i / therm_w) / (row_step * 2),
-            symbol: "\u{25be}",  // ▾
+            symbol: "\u{25be}", // ▾
             label: format!("{t_min:.1}\u{00b0}"),
-            r: 0, g: 128, b: 255,
+            r: 0,
+            g: 128,
+            b: 255,
         },
         Marker {
             ac: (max_i % therm_w) / col_step,
             ar: (max_i / therm_w) / (row_step * 2),
-            symbol: "\u{25b4}",  // ▴
+            symbol: "\u{25b4}", // ▴
             label: format!("{t_max:.1}\u{00b0}"),
-            r: 255, g: 0, b: 0,
+            r: 255,
+            g: 0,
+            b: 0,
         },
         Marker {
             ac: (therm_w / 2) / col_step,
             ar: (therm_h / 2) / (row_step * 2),
             symbol: "+",
             label: format!("{center_temp:.1}\u{00b0}"),
-            r: 255, g: 255, b: 255,
+            r: 255,
+            g: 255,
+            b: 255,
         },
     ];
 
@@ -154,7 +157,10 @@ pub(crate) fn draw_tui_frame(
     let _ = write!(
         out,
         "\n  Range: \x1b[34m{:.1}\x1b[0m\u{00b0}C ~ \x1b[31m{:.1}\x1b[0m\u{00b0}C  |  \u{0394}: {:.1}\u{00b0}C  |  Center: {:.1}\u{00b0}C\n",
-        t_min, t_max, t_max - t_min, center_temp,
+        t_min,
+        t_max,
+        t_max - t_min,
+        center_temp,
     );
     out.push_str(
         "\x1b[1m\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\u{2501}\x1b[0m\n",

@@ -1,5 +1,11 @@
 pub(crate) const PALETTE_NAMES: &[&str] = &[
-    "ironbow", "rainbow", "grayscale", "inverted", "hot", "arctic", "all",
+    "ironbow",
+    "rainbow",
+    "grayscale",
+    "inverted",
+    "hot",
+    "arctic",
+    "all",
 ];
 
 pub(crate) struct Palette {
@@ -24,15 +30,26 @@ impl Palette {
 
     // Return all 6 palettes in display order.
     pub(crate) fn all() -> Vec<Self> {
-        ["ironbow", "rainbow", "grayscale", "inverted", "hot", "arctic"]
-            .iter()
-            .map(|name| Self::by_name(name).unwrap())
-            .collect()
+        [
+            "ironbow",
+            "rainbow",
+            "grayscale",
+            "inverted",
+            "hot",
+            "arctic",
+        ]
+        .iter()
+        .map(|name| Self::by_name(name).unwrap())
+        .collect()
     }
 }
 
 // Linearly interpolate between RGB control points to build a 256-entry LUT.
-#[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss, clippy::cast_precision_loss)]
+#[allow(
+    clippy::cast_possible_truncation,
+    clippy::cast_sign_loss,
+    clippy::cast_precision_loss
+)]
 fn interpolate(control_points: &[(u8, [u8; 3])]) -> [[u8; 3]; 256] {
     let mut lut = [[0u8; 3]; 256];
     for pair in control_points.windows(2) {
@@ -46,8 +63,9 @@ fn interpolate(control_points: &[(u8, [u8; 3])]) -> [[u8; 3]; 256] {
             let t = i as f32 / n as f32;
             let idx = pos0 as usize + i;
             for ch in 0..3 {
-                lut[idx][ch] =
-                    (f32::from(rgb1[ch]) - f32::from(rgb0[ch])).mul_add(t, f32::from(rgb0[ch])).clamp(0.0, 255.0) as u8;
+                lut[idx][ch] = (f32::from(rgb1[ch]) - f32::from(rgb0[ch]))
+                    .mul_add(t, f32::from(rgb0[ch]))
+                    .clamp(0.0, 255.0) as u8;
             }
         }
     }
@@ -72,11 +90,11 @@ fn ironbow() -> [[u8; 3]; 256] {
 
 fn rainbow() -> [[u8; 3]; 256] {
     interpolate(&[
-        (0, [0, 0, 255]),       // blue
-        (64, [0, 255, 255]),    // cyan
-        (128, [0, 255, 0]),     // green
-        (192, [255, 255, 0]),   // yellow
-        (255, [255, 0, 0]),     // red
+        (0, [0, 0, 255]),     // blue
+        (64, [0, 255, 255]),  // cyan
+        (128, [0, 255, 0]),   // green
+        (192, [255, 255, 0]), // yellow
+        (255, [255, 0, 0]),   // red
     ])
 }
 
